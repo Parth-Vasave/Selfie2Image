@@ -68,13 +68,8 @@ class UGATITGenerator:
 
             heatmap = tf.squeeze(tf.reduce_sum(x, axis=-1))
 
-            if self.light:
-                x_ = global_avg_pooling(x)
-                x_ = fully_connected(x_, channel, scope='FC')
-                x_ = relu(x_)
-                gamma, beta = self.MLP(x_, reuse=reuse)
-            else:
-                gamma, beta = self.MLP(x, reuse=reuse)
+            # Gamma, Beta block
+            gamma, beta = self.MLP(x, reuse=reuse)
 
             # Up-Sampling Bottleneck
             for i in range(self.n_res):
@@ -102,6 +97,9 @@ class UGATITGenerator:
     def MLP(self, x, use_bias=True, reuse=False, scope='MLP'):
         """Multi-Layer Perceptron for AdaLIN parameters."""
         channel = self.ch * self.n_res
+
+        if self.light:
+            x = global_avg_pooling(x)
 
         with tf.compat.v1.variable_scope(scope, reuse=reuse):
             for i in range(2):
