@@ -19,6 +19,7 @@ def install_dependencies():
         'opencv-python-headless>=4.8.0',
         'numpy>=1.23.0',
         'Pillow>=9.0.0',
+        'tf-keras',
     ])
     print("✅ Dependencies installed!\n")
 
@@ -143,6 +144,8 @@ def verify_setup():
     print("=" * 50)
 
     # Check TensorFlow
+    import os
+    os.environ["TF_USE_LEGACY_KERAS"] = "1"
     import tensorflow as tf
     print(f"   TensorFlow version: {tf.__version__}")
 

@@ -4,6 +4,8 @@ Ported from taki0112/UGATIT (TF1.14) to tf.compat.v1 for TF2 compatibility.
 All variable names and scopes are preserved exactly to match pretrained checkpoint keys.
 """
 
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import tensorflow as tf
 
 tf.compat.v1.disable_eager_execution()

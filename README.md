@@ -35,7 +35,7 @@ Open a new [Google Colab notebook](https://colab.research.google.com/) with **GP
 
 ```python
 # Install dependencies and download pretrained model
-!pip install -q gradio opencv-python-headless kaggle
+!pip install -q gradio opencv-python-headless kaggle tf-keras
 
 # Upload your kaggle.json when prompted
 from google.colab import files
@@ -61,6 +61,7 @@ os.makedirs(os.path.expanduser('~/.kaggle'), exist_ok=True)
 
 ```python
 import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import tensorflow as tf
 
 print(f"TensorFlow: {tf.__version__}")

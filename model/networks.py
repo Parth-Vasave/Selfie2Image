@@ -4,6 +4,8 @@ Ported from taki0112/UGATIT for inference only.
 Only the A→B generator (selfie→anime) is needed for test mode.
 """
 
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import tensorflow as tf
 from model.ops import (
     conv, instance_norm, relu, tanh, resblock,
