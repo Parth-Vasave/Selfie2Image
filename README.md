@@ -162,4 +162,3 @@ The pretrained model was trained on the selfie2anime dataset for 100 epochs.
 ## 📄 License
 
 MIT License — see the original [UGATIT repo](https://github.com/taki0112/UGATIT) for model license details.
-# Selfie2Image
