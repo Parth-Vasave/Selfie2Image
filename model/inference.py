@@ -29,6 +29,32 @@ class SelfieToAnime:
             '4resblock_6dis_1_1_10_10_1000_sn_smoothing'
         )
 
+    def _find_checkpoint_dir(self):
+        """
+        Auto-discover the checkpoint directory by searching recursively.
+        Handles nested structures from Kaggle extraction
+        (e.g., checkpoint/checkpoint/UGATIT_light_...).
+        """
+        # Try direct path first
+        direct = os.path.join(self.checkpoint_dir, self.model_subdir)
+        if os.path.exists(direct):
+            return direct
+
+        # Search recursively for the model subdirectory
+        for root, dirs, files in os.walk(self.checkpoint_dir):
+            if self.model_subdir in dirs:
+                found = os.path.join(root, self.model_subdir)
+                print(f"[*] Found checkpoint at: {found}")
+                return found
+
+        # Last resort: look for any directory containing a 'checkpoint' file
+        for root, dirs, files in os.walk(self.checkpoint_dir):
+            if 'checkpoint' in files:
+                print(f"[*] Found checkpoint state in: {root}")
+                return root
+
+        return direct  # Fall back to default path for error message
+
     def load_model(self):
         """Build graph, create session, and restore checkpoint."""
         print("[*] Building computation graph...")
@@ -41,7 +67,7 @@ class SelfieToAnime:
         self.sess.run(tf.compat.v1.global_variables_initializer())
 
         saver = tf.compat.v1.train.Saver()
-        ckpt_path = os.path.join(self.checkpoint_dir, self.model_subdir)
+        ckpt_path = self._find_checkpoint_dir()
 
         print(f"[*] Looking for checkpoint in: {ckpt_path}")
         ckpt = tf.train.get_checkpoint_state(ckpt_path)
@@ -54,7 +80,9 @@ class SelfieToAnime:
         else:
             raise FileNotFoundError(
                 f"No checkpoint found in {ckpt_path}. "
-                "Please download the pretrained model from Kaggle."
+                "Please download the pretrained model from Kaggle.\n"
+                f"Contents of '{self.checkpoint_dir}': "
+                f"{os.listdir(self.checkpoint_dir) if os.path.exists(self.checkpoint_dir) else 'DIR NOT FOUND'}"
             )
 
     def preprocess(self, image):
